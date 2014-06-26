@@ -1,0 +1,160 @@
+<!--
+  Copyright 2011-2014 Marvell Semiconductor, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<module xmlns="http://www.kinoma.com/kpr/1">
+
+    <require id="HardwarepinsModule" path="HardwarepinsModule" />
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Basic input analog module for polling data from a single analog input pin -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <class id="Input" like="HardwarepinsModule.Analog">
+        <constructor params="pin, config">
+            <![CDATA[
+                HardwarepinsModule.Analog.call( this, [pin], config );
+            ]]>
+        </constructor>
+        <method id="configureParameters" params="parameters">
+            <![CDATA[
+                HardwarepinsModule.Analog.prototype.configureParameters.call( this, parameters );
+                        
+                parameters.pin = this.pins[0];
+            ]]>
+        </method>
+        <method id="createHardwarepinsSimulator">
+            <![CDATA[
+                return new InputSimulatorInterface();
+            ]]>
+        </method>
+        <method id="init" params="callback">
+            <![CDATA[
+                this.run( "AnalogScripts", "input_bll_init", null, callback );
+            ]]>
+        </method>
+        <method id="get" params="callback">
+            <![CDATA[
+                this.run( "AnalogScripts", "input_bll_get", null, callback );
+            ]]>
+        </method>
+        <method id="poll" params="time, units, callback, skipFirst">
+            <![CDATA[
+                this.repeat( "AnalogScripts", "input_bll_poll", null, time, units, skipFirst, callback );
+            ]]>
+        </method>
+    </class>
+    
+    <!-- ++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Basic analog input simulator interface -->
+    <!-- ++++++++++++++++++++++++++++++++++++++ -->
+
+	<variable id="INPUT_SIMULATOR_ID" value="'Analog.Input'" />
+	
+    <class id="InputSimulatorInterface" like="HardwarepinsModule.SimulatorInterface">
+        <method id="getSimulatorId">
+            <![CDATA[
+                return INPUT_SIMULATOR_ID;
+            ]]>
+        </method>
+        <method id="getSimulatorModule">
+            <![CDATA[
+                return mergeURI( module.uri, "AnalogSimulators" );
+            ]]>
+        </method>
+        <method id="input_bll_init" params="query, parameters, invoker">
+            <![CDATA[
+                this.sendHardwarepinsEvent( "init", query, parameters, invoker );
+            ]]>
+        </method>
+        <method id="input_bll_get" params="query, parameters, invoker">
+            <![CDATA[
+                this.sendHardwarepinsEvent( "get", query, parameters, invoker );
+            ]]>
+        </method>
+        <method id="input_bll_poll" params="query, parameters, invoker">
+            <![CDATA[
+                this.sendHardwarepinsEvent( "poll", query, parameters, invoker );
+            ]]>
+        </method>
+    </class>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Dial class for implementing analog dial input -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <class id="Dial" like="Input">
+        <field id="laps" />
+        <constructor params="pin, laps, config">
+            <![CDATA[
+                Input.call( this, pin, config );
+                
+                this.laps = laps;
+            ]]>
+        </constructor>
+        <method id="configureParameters" params="parameters">
+            <![CDATA[
+                Input.prototype.configureParameters.call( this, parameters );
+                        
+                parameters.laps = this.laps;
+            ]]>
+        </method>
+        <method id="get" params="callback">
+            <![CDATA[
+                this.run( "AnalogScripts", "dial_bll_get", null, callback );
+            ]]>
+        </method>
+        <method id="poll" params="time, units, callback, skipFirst">
+            <![CDATA[
+                this.repeat( "AnalogScripts", "dial_bll_poll", null, time, units, skipFirst, callback );
+            ]]>
+        </method>
+    </class>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Joystick class for implementing analog joystick input -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <class id="Joystick" like="HardwarepinsModule.Analog">
+        <constructor params="xpin, ypin, config">
+            <![CDATA[
+                HardwarepinsModule.Analog.call( this, [xpin, ypin], config );
+            ]]>
+        </constructor>
+        <method id="configureParameters" params="parameters">
+            <![CDATA[
+                HardwarepinsModule.Analog.prototype.configureParameters.call( this, parameters );
+                        
+                parameters.xpin = this.pins[0];
+                parameters.ypin = this.pins[1];
+            ]]>
+        </method>
+        <method id="init" params="callback">
+            <![CDATA[
+                this.run( "AnalogScripts", "joystick_bll_init", null, callback );
+            ]]>
+        </method>
+        <method id="get" params="callback">
+            <![CDATA[
+                this.run( "AnalogScripts", "joystick_bll_get", null, callback );
+            ]]>
+        </method>
+        <method id="poll" params="time, units, callback, skipFirst">
+            <![CDATA[
+                this.repeat( "AnalogScripts", "joystick_bll_poll", null, time, units, skipFirst, callback );
+            ]]>
+        </method>
+    </class>
+
+</module>

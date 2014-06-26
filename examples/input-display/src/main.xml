@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<program xmlns="http://www.kinoma.com/kpr/1">
+
+    <require id="Analog" path="Analog" />
+    <require id="HardwarepinsModule" path="HardwarepinsModule" />
+
+    <container id="MainContainer" top="0" left="0" bottom="0" right="0">
+        <skin color="white"/>
+        <label name="info" string="' - - - '">
+            <style font="78px Arial" color="black"/>
+        </label>
+        <behavior>
+            <method id="onDisplayed" params="content">
+                <![CDATA[
+                    // create a new analog Input sensor object instance
+                    var input = new Analog.Input( 59 );
+                    
+                    // initialize the sensor and start polling
+                    input.init();
+                    input.poll( 50, HardwarepinsModule.MILLISECONDS, "/analog/value" );
+                ]]>
+            </method>
+            <method id="handleAnalogValueChanged" params="content, value">
+                <![CDATA[
+                    content.info.string = Math.round( value * 100);
+                ]]>
+            </method>
+        </behavior>
+    </container>
+
+    <script>
+        <![CDATA[
+            // add the main container to the application
+            application.add( new MainContainer() );
+        ]]>
+    </script>
+
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Handler that is called when polling the analog input state -->
+    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+    <handler path="/analog/value">
+        <behavior>
+            <method id="onInvoke" params="content, message">
+                <![CDATA[
+                    var data = message.requestObject;
+                
+                    // delegate the value changed event to the main container
+                    if( data != null )
+                        application.distribute( "handleAnalogValueChanged", data.value );
+                ]]>
+            </method>
+        </behavior>
+    </handler>
+</program>

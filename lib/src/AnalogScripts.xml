@@ -1,0 +1,104 @@
+<!--
+  Copyright 2011-2014 Marvell Semiconductor, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<module xmlns="http://www.kinoma.com/kpr/1">
+
+    <!-- ++++++++++++++++++++++++++++++ -->
+    <!-- Basic analog input BLL scripts -->
+    <!-- ++++++++++++++++++++++++++++++ -->
+
+    <function id="createInputResult" params="value">
+        <![CDATA[
+            return { value:value };
+        ]]>
+    </function>
+    <function id="input_bll_init" params="parameters">
+        <![CDATA[
+            a2d.init( parameters.pins );
+        ]]>
+    </function>
+    <function id="input_bll_get" params="parameters">
+        <![CDATA[
+            var pins = a2d.read( parameters.pins );
+            var value = pins[parameters.pin];
+            
+            // create the input result
+            return value != null ? createInputResult( value ) : null;        
+        ]]>
+    </function>
+    <function id="input_bll_poll" params="parameters">
+        <![CDATA[
+            return input_bll_get( parameters );        
+        ]]>
+    </function>
+
+    <!-- ++++++++++++++++++++++++++++++ -->
+    <!-- Dial analog input BLL scripts  -->
+    <!-- ++++++++++++++++++++++++++++++ -->
+
+    <function id="creatDialResult" params="value, laps">
+        <![CDATA[
+            var result = createInputResult( value );
+            
+            if( laps != null )
+                result.lap = value * (1 / laps);
+        
+            return result;
+        ]]>
+    </function>
+    <function id="dial_bll_get" params="parameters">
+        <![CDATA[
+            var pins = a2d.read( parameters.pins );
+            var value = pins[parameters.pin];
+            
+            // create the input result
+            return creatDialResult( value );        
+        ]]>
+    </function>
+    <function id="dial_bll_poll" params="parameters">
+        <![CDATA[
+            return dial_bll_get( params );        
+        ]]>
+    </function>
+
+    <!-- +++++++++++++++++++++++++++++++++ -->
+    <!-- Joystick analog input BLL scripts -->
+    <!-- +++++++++++++++++++++++++++++++++ -->
+
+    <function id="createJoystickResult" params="x, y">
+        <![CDATA[
+            return { x:x, y:y };
+        ]]>
+    </function>
+    <function id="joystick_bll_init" params="parameters">
+        <![CDATA[
+            a2d.init( parameters.pins );
+        ]]>
+    </function>
+    <function id="joystick_bll_get" params="parameters">
+        <![CDATA[
+            var pins = a2d.read( parameters.pins );
+            
+            // create the button result
+            return createJoystickResult( pins[parameters.xpin], pins[parameters.ypin] );    
+        ]]>
+    </function>
+    <function id="joystick_bll_poll" params="parameters">
+        <![CDATA[
+            return joystick_bll_get( parameters );
+        ]]>
+    </function>
+
+</module>
