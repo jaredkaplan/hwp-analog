@@ -33,7 +33,7 @@
         <![CDATA[
             var pins = a2d.read( parameters.pins );
             var value = pins[parameters.pin];
-            
+
             // create the input result
             return value != null ? createInputResult( value ) : null;        
         ]]>
@@ -51,10 +51,10 @@
     <function id="creatDialResult" params="value, laps">
         <![CDATA[
             var result = createInputResult( value );
-            
+
             if( laps != null )
                 result.lap = value * (1 / laps);
-        
+
             return result;
         ]]>
     </function>
@@ -62,14 +62,14 @@
         <![CDATA[
             var pins = a2d.read( parameters.pins );
             var value = pins[parameters.pin];
-            
+
             // create the input result
-            return creatDialResult( value );        
+            return creatDialResult( value );
         ]]>
     </function>
     <function id="dial_bll_poll" params="parameters">
         <![CDATA[
-            return dial_bll_get( params );        
+            return dial_bll_get( params );
         ]]>
     </function>
 
@@ -90,7 +90,7 @@
     <function id="joystick_bll_get" params="parameters">
         <![CDATA[
             var pins = a2d.read( parameters.pins );
-            
+
             // create the button result
             return createJoystickResult( pins[parameters.xpin], pins[parameters.ypin] );    
         ]]>

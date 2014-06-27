@@ -30,7 +30,7 @@
         <method id="configureParameters" params="parameters">
             <![CDATA[
                 HardwarepinsModule.Analog.prototype.configureParameters.call( this, parameters );
-                        
+
                 parameters.pin = this.pins[0];
             ]]>
         </method>
@@ -55,13 +55,13 @@
             ]]>
         </method>
     </class>
-    
+
     <!-- ++++++++++++++++++++++++++++++++++++++ -->
     <!-- Basic analog input simulator interface -->
     <!-- ++++++++++++++++++++++++++++++++++++++ -->
 
-	<variable id="INPUT_SIMULATOR_ID" value="'Analog.Input'" />
-	
+    <variable id="INPUT_SIMULATOR_ID" value="'Analog.Input'" />
+
     <class id="InputSimulatorInterface" like="HardwarepinsModule.SimulatorInterface">
         <method id="getSimulatorId">
             <![CDATA[
@@ -89,7 +89,7 @@
             ]]>
         </method>
     </class>
-    
+
     <!-- +++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- Dial class for implementing analog dial input -->
     <!-- +++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -121,7 +121,7 @@
             ]]>
         </method>
     </class>
-    
+
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- Joystick class for implementing analog joystick input -->
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -135,7 +135,7 @@
         <method id="configureParameters" params="parameters">
             <![CDATA[
                 HardwarepinsModule.Analog.prototype.configureParameters.call( this, parameters );
-                        
+
                 parameters.xpin = this.pins[0];
                 parameters.ypin = this.pins[1];
             ]]>
